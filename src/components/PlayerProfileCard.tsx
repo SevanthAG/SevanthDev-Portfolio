@@ -32,7 +32,7 @@ export default function PlayerProfileCard() {
       <div className="p-3 sm:p-4">
         <div className="pixel-slot p-1.5">
           <img
-            src="/profile-photo.jpeg"
+            src="/profile-photo.png"
             alt="Portrait of Sevanth A G"
             width={512}
             height={512}
