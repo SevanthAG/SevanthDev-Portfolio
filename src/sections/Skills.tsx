@@ -1,82 +1,146 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useReveal } from '../hooks/useReveal';
 import { resumeData } from '../data/resume';
+import { getSkillMeta, techBlockColor } from '../data/skills';
 import { Code2, Layout, Server, Database, Wrench, Cpu } from 'lucide-react';
 import type { ComponentType } from 'react';
+import SectionHeading from '../components/SectionHeading';
+import SectionMotif from '../components/SectionMotif';
 
 const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   Code2, Layout, Server, Database, Wrench, Cpu,
 };
 
-export default function Skills() {
-  const { ref, isVisible } = useReveal();
+/** Detail body shared by the floating tooltip and the phone dock. */
+function SkillDetail({ skill }: { skill: string }) {
+  const meta = getSkillMeta(skill);
 
   return (
-    <section id="skills" className="py-24 relative bg-gray-50/50 dark:bg-[#0B1120]/80">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-indigo-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 left-1/4 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl" />
-      </div>
+    <>
+      <p className="font-pixel text-[10px] leading-none text-ink">{skill}</p>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <p className="text-indigo-500 dark:text-indigo-400 font-medium text-sm mb-3 tracking-wide">
-            Skills
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Technologies I Work With
-          </h2>
-          <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
-            A comprehensive set of tools and technologies I use to build scalable, production-ready applications.
-          </p>
-        </motion.div>
+      {meta.learning && (
+        <p className="mt-2">
+          <span className="pixel-chip pixel-chip--gold pixel-chip--flat">Learning</span>
+        </p>
+      )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <p className="mt-2 font-body text-xs leading-relaxed text-ink-muted">{meta.short}</p>
+
+      {meta.usage && (
+        <>
+          <p className="mt-2 font-pixel text-[9px] uppercase tracking-wider text-ink-faint">
+            Used in
+          </p>
+          <p className="mt-1 font-body text-xs leading-relaxed text-accent">{meta.usage}</p>
+        </>
+      )}
+    </>
+  );
+}
+
+export default function Skills() {
+  const { ref, isVisible } = useReveal();
+  const [inspected, setInspected] = useState<string | null>(null);
+
+  const itemId = (category: string, skill: string) => `${category}:${skill}`;
+
+  return (
+    <section id="skills" className="relative overflow-hidden py-20 sm:py-24">
+      <SectionMotif variant="inventory" side="left" />
+
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" ref={ref}>
+        <SectionHeading
+          step="02"
+          kicker="Skills"
+          title="Technologies I Work With"
+          subtitle="A comprehensive set of tools and technologies I use to build scalable, production-ready applications. Hover or tap an item to inspect it."
+        />
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {resumeData.skills.map((category, i) => {
             const Icon = iconMap[category.icon] || Code2;
+            const inspectedSkill =
+              category.skills.find((skill) => itemId(category.title, skill) === inspected) ?? null;
+
             return (
-              <motion.div
+              <motion.article
                 key={category.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.4, delay: 0.1 * i }}
-                className="group p-5 rounded-2xl border border-gray-200 dark:border-white/5
-                           bg-white dark:bg-[#111827]/50 
-                           hover:border-indigo-200 dark:hover:border-indigo-500/30
-                           hover:shadow-lg hover:shadow-indigo-500/5
-                           transition-all duration-300"
+                transition={{ duration: 0.4, delay: 0.08 * i }}
+                className="pixel-panel flex flex-col"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-9 h-9 rounded-lg bg-indigo-100 dark:bg-indigo-500/10 
-                                  flex items-center justify-center
-                                  group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/20 transition-colors">
-                    <Icon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                <header className="pixel-texture flex items-center gap-3 border-b-2 border-line bg-surface-2 px-4 py-3">
+                  <span className="pixel-slot grid h-9 w-9 shrink-0 place-items-center">
+                    <Icon className="h-4 w-4 text-ink-muted" />
+                  </span>
+                  <h3 className="text-[11px] leading-snug text-ink">{category.title}</h3>
+                </header>
+
+                {/* Inventory-style item slots. The label carries the full detail
+                    for assistive tech; the tooltip is the visual equivalent. */}
+                <ul className="flex flex-1 flex-wrap content-start gap-2 px-4 py-4">
+                  {category.skills.map((skill) => {
+                    const meta = getSkillMeta(skill);
+                    const id = itemId(category.title, skill);
+                    const isInspected = inspected === id;
+
+                    return (
+                      <li key={skill} className="skill-item">
+                        <button
+                          type="button"
+                          onMouseEnter={() => setInspected(id)}
+                          onMouseLeave={() => setInspected(null)}
+                          onFocus={() => setInspected(id)}
+                          onBlur={() => setInspected(null)}
+                          onClick={() => setInspected(isInspected ? null : id)}
+                          onKeyDown={(event) => {
+                            if (event.key === 'Escape') setInspected(null);
+                          }}
+                          className="pixel-slot pixel-slot--interactive flex items-center gap-2 px-2.5 py-2"
+                        >
+                          <span
+                            aria-hidden="true"
+                            className={`h-3 w-3 shrink-0 border border-black/30 ${techBlockColor(skill)}`}
+                          />
+                          <span className="font-pixel text-[11px] leading-none text-ink">
+                            {skill}
+                          </span>
+                          <span className="sr-only">
+                            {meta.short}
+                            {meta.usage ? `. Used in: ${meta.usage}` : ''}
+                            {meta.learning ? '. Currently learning.' : ''}
+                          </span>
+                        </button>
+
+                        {/* Desktop: floating inspection tooltip */}
+                        {isInspected && (
+                          <div className="skill-tip hidden sm:block" aria-hidden="true">
+                            <SkillDetail skill={skill} />
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                {/* Phone: docked inspection bar so nothing can overflow */}
+                {inspectedSkill && (
+                  <div
+                    className="border-t-2 border-line bg-surface-inset px-4 py-3 sm:hidden"
+                    aria-hidden="true"
+                  >
+                    <p className="font-pixel text-[9px] uppercase tracking-wider text-ink-faint">
+                      Inspecting
+                    </p>
+                    <div className="mt-2 bg-surface p-3">
+                      <SkillDetail skill={inspectedSkill} />
+                    </div>
                   </div>
-                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">
-                    {category.title}
-                  </h3>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {category.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-3 py-1 rounded-lg text-xs font-medium
-                                 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300
-                                 border border-gray-200 dark:border-white/5
-                                 hover:border-indigo-300 dark:hover:border-indigo-500/30
-                                 hover:text-indigo-600 dark:hover:text-indigo-400
-                                 transition-all duration-200"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
+                )}
+              </motion.article>
             );
           })}
         </div>

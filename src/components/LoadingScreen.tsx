@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface LoadingScreenProps {
   onComplete: () => void;
 }
 
+const statusFor = (progress: number) => {
+  if (progress >= 100) return 'World ready';
+  if (progress >= 70) return 'Placing blocks…';
+  return 'Generating terrain…';
+};
+
+/** Splash screen styled as a Minecraft-style "loading world" bar. */
 export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
 
@@ -23,32 +30,50 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   }, [onComplete]);
 
   return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0B1120]"
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5, ease: 'easeInOut' }}
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
+    <motion.div
+      role="status"
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4, ease: 'easeInOut' }}
+      className="pixel-texture--strong fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-block-charcoal px-6"
+    >
+      {/*
+        Note: <html> already carries `.dark`/`.light` from the inline script in
+        index.html, so the blocky slab above is drawn in the active theme.
+      */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-3 bg-block-dirt pixel-texture--strong"
+      />
+
+      <div className="w-full max-w-xs text-center">
+        {/* Tiny grass block "world chunk" */}
+        <div
+          aria-hidden="true"
+          className="pixel-slot mx-auto mb-6 flex h-14 w-14 flex-col"
         >
-          <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
-            Sevanth<span className="text-indigo-400"> A G</span>
-          </h1>
-          <p className="text-gray-400 text-sm mb-8">Full Stack Developer</p>
-          <div className="w-48 h-[2px] bg-white/10 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
-              style={{ width: `${progress}%` }}
-              transition={{ duration: 0.1 }}
-            />
-          </div>
-          <p className="text-gray-500 text-xs mt-4">{progress}%</p>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+          <span className="h-4 w-full bg-block-grass" />
+          <span className="flex-1 w-full bg-block-dirt" />
+        </div>
+
+        <h1 className="text-xl leading-tight text-block-offwhite sm:text-2xl">
+          Sevanth<span className="text-block-grass"> A G</span>
+        </h1>
+        <p className="mt-3 font-pixel text-[10px] uppercase tracking-widest text-block-beige/80">
+          Loading world
+        </p>
+
+        {/* XP-style progress bar */}
+        <div className="mt-6 h-4 w-full border-2 border-black/60 bg-black/50">
+          <div
+            className="h-full bg-block-grass shadow-[inset_0_2px_0_rgba(255,255,255,0.3),inset_0_-2px_0_rgba(0,0,0,0.25)] transition-[width] duration-75 ease-linear"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
+        <p className="mt-4 font-pixel text-[10px] text-block-beige/70">
+          {statusFor(progress)} · {progress}%
+        </p>
+      </div>
+    </motion.div>
   );
 }

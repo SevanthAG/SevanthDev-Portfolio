@@ -1,94 +1,143 @@
 import { motion } from 'framer-motion';
 import { useReveal } from '../hooks/useReveal';
 import { resumeData } from '../data/resume';
-import { Users, Trophy, Star } from 'lucide-react';
+import { Users, Trophy, Star, Check } from 'lucide-react';
+import SectionHeading from '../components/SectionHeading';
+import SectionMotif from '../components/SectionMotif';
+
+/** Summary of what the portfolio already proves — no new claims, only data. */
+const advancements = [
+  {
+    title: `Built and shipped ${resumeData.projects[0].title}`,
+    detail: resumeData.projects[0].description,
+  },
+  {
+    title: 'Completed a full-stack development internship',
+    detail: `${resumeData.experience[0].company} · ${resumeData.experience[0].period}`,
+  },
+  {
+    title: `Earned ${resumeData.certifications.length} professional certifications`,
+    detail: resumeData.certifications.map((cert) => cert.issuer).join(' · '),
+  },
+  {
+    title: `Studying ${resumeData.education[0].degree}`,
+    detail: `${resumeData.education[0].score} · Class of ${resumeData.education[0].year}`,
+  },
+  {
+    title: `Coordinated ${resumeData.leadership.length} college technical events`,
+    detail: resumeData.leadership.map((role) => role.organization).join(' · '),
+  },
+  {
+    title: `Placed ${resumeData.achievements[0].title.toLowerCase()} in a prompt engineering competition`,
+    detail: resumeData.achievements[0].event,
+  },
+];
 
 export default function Leadership() {
   const { ref, isVisible } = useReveal();
 
   return (
-    <section id="leadership" className="py-24 relative bg-gray-50/50 dark:bg-[#0B1120]/80">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <p className="text-indigo-500 dark:text-indigo-400 font-medium text-sm mb-3 tracking-wide">
-            Leadership & Achievements
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Beyond the Code
-          </h2>
-        </motion.div>
+    <section id="leadership" className="relative overflow-hidden py-20 sm:py-24">
+      <SectionMotif variant="team" side="right" />
 
-        {/* Leadership Roles */}
-        <div className="mb-16">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-8 flex items-center gap-2">
-            <Users className="w-5 h-5 text-indigo-500" />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" ref={ref}>
+        <SectionHeading step="06" kicker="Leadership & Achievements" title="Beyond the Code" />
+
+        {/* Advancements: a scannable summary of what is already in the resume */}
+        <motion.article
+          initial={{ opacity: 0, y: 20 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.4 }}
+          className="pixel-panel mb-14"
+        >
+          <header className="pixel-texture flex items-center gap-3 border-b-2 border-line bg-surface-2 px-4 py-3">
+            <span className="pixel-slot grid h-8 w-8 shrink-0 place-items-center">
+              <Trophy className="h-4 w-4 text-gold" aria-hidden="true" />
+            </span>
+            <h3 className="text-xs text-ink">Advancements</h3>
+          </header>
+
+          <ul className="grid grid-cols-1 gap-x-8 gap-y-4 px-4 py-5 sm:grid-cols-2 lg:grid-cols-3">
+            {advancements.map((item) => (
+              <li key={item.title} className="flex gap-3">
+                <span
+                  className="pixel-slot mt-0.5 grid h-6 w-6 shrink-0 place-items-center"
+                  aria-hidden="true"
+                >
+                  <Check className="h-3.5 w-3.5 text-gold" />
+                </span>
+                <div className="min-w-0">
+                  <p className="font-pixel text-[11px] leading-relaxed text-ink">{item.title}</p>
+                  <p className="mt-1.5 font-body text-xs leading-relaxed text-ink-muted">
+                    {item.detail}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </motion.article>
+
+        {/* Leadership roles */}
+        <div className="mb-14">
+          <h3 className="mb-6 flex items-center gap-3 text-xs text-ink">
+            <span className="pixel-slot grid h-8 w-8 place-items-center" aria-hidden="true">
+              <Users className="h-4 w-4 text-accent" />
+            </span>
             Leadership Roles
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {resumeData.leadership.map((item, i) => (
-              <motion.div
+              <motion.article
                 key={item.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.4, delay: 0.1 * i }}
-                className="p-5 rounded-2xl border border-gray-200 dark:border-white/5
-                           bg-white dark:bg-[#111827]/50
-                           hover:border-indigo-200 dark:hover:border-indigo-500/30
-                           hover:shadow-lg hover:shadow-indigo-500/5
-                           transition-all duration-300"
+                whileHover={{ y: -5, transition: { duration: 0.14, ease: 'easeOut' } }}
+                transition={{ duration: 0.4, delay: 0.08 * i }}
+                className="pixel-panel pixel-lift px-4 py-5"
               >
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
-                  {item.title}
-                </h4>
-                <p className="text-sm text-indigo-600 dark:text-indigo-400 mb-3">
+                <h4 className="text-xs leading-snug text-ink">{item.title}</h4>
+                <p className="mt-2 font-pixel text-[11px] leading-relaxed text-accent">
                   {item.organization}
                 </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="mt-3 font-body text-sm leading-relaxed text-ink-muted">
                   {item.description}
                 </p>
-              </motion.div>
+              </motion.article>
             ))}
           </div>
         </div>
 
         {/* Achievements */}
         <div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-8 flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-amber-500" />
+          <h3 className="mb-6 flex items-center gap-3 text-xs text-ink">
+            <span className="pixel-slot grid h-8 w-8 place-items-center" aria-hidden="true">
+              <Star className="h-4 w-4 text-gold" />
+            </span>
             Achievements
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {resumeData.achievements.map((item, i) => (
-              <motion.div
+              <motion.article
                 key={item.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.4, delay: 0.1 * i }}
-                className="p-5 rounded-2xl border border-gray-200 dark:border-white/5
-                           bg-white dark:bg-[#111827]/50
-                           hover:border-amber-200 dark:hover:border-amber-500/20
-                           hover:shadow-lg hover:shadow-amber-500/5
-                           transition-all duration-300"
+                whileHover={{ y: -5, transition: { duration: 0.14, ease: 'easeOut' } }}
+                transition={{ duration: 0.4, delay: 0.08 * i }}
+                className="pixel-panel pixel-lift px-4 py-5"
               >
-                <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-500/10 
-                                flex items-center justify-center mb-3">
-                  <Star className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                </div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
-                  {item.title}
-                </h4>
-                <p className="text-sm text-indigo-600 dark:text-indigo-400 mb-2">
+                <span className="pixel-slot grid h-9 w-9 place-items-center" aria-hidden="true">
+                  <Star className="h-4 w-4 text-gold" />
+                </span>
+                <h4 className="mt-4 text-xs leading-snug text-ink">{item.title}</h4>
+                <p className="mt-2 font-pixel text-[11px] leading-relaxed text-accent">
                   {item.event}
                 </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="mt-3 font-body text-sm leading-relaxed text-ink-muted">
                   {item.description}
                 </p>
-              </motion.div>
+              </motion.article>
             ))}
           </div>
         </div>

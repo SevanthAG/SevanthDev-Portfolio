@@ -1,62 +1,1047 @@
 @import 'tailwindcss';
 
-@theme {
-  --color-dark-bg: #0B1120;
-  --color-dark-surface: #111827;
-  --color-dark-primary: #6366F1;
-  --color-dark-secondary: #8B5CF6;
-  --color-dark-accent: #06B6D4;
-  --color-dark-text: #F9FAFB;
-  --color-dark-muted: #9CA3AF;
+/*
+  The theme toggle adds `.dark` / `.light` to <html>, so dark mode must be
+  class-driven instead of the Tailwind v4 default (prefers-color-scheme).
+*/
+@custom-variant dark (&:where(.dark, .dark *));
 
-  --color-light-bg: #FFFFFF;
-  --color-light-surface: #F8FAFC;
-  --color-light-primary: #4F46E5;
-  --color-light-secondary: #7C3AED;
-  --color-light-accent: #0891B2;
-  --color-light-text: #111827;
-  --color-light-muted: #6B7280;
+/* ==========================================================================
+   Palette + theme tokens
+   --------------------------------------------------------------------------
+   Raw values come from a Minecraft-inspired natural palette. The semantic
+   tokens below them swap between "day" (light) and "night" (dark) so every
+   component can be styled once with utilities such as `bg-surface text-ink`.
+   ========================================================================== */
+:root {
+  color-scheme: light;
 
-  --font-inter: 'Inter', sans-serif;
+  /* Raw block palette */
+  --mc-grass: #7ccb4e;
+  --mc-grass-dark: #4a8a2c;
+  --mc-forest: #2f5d24;
+  --mc-dirt: #8b5e3c;
+  --mc-dirt-dark: #6e482c;
+  --mc-stone: #9ba1a6;
+  --mc-charcoal: #171a1d;
+  --mc-beige: #dccfb4;
+  --mc-sky: #6ec1e4;
+  --mc-warm-white: #f6f2e7;
+  --mc-gold: #e0a83c;
+
+  /* Pixel-art textures (tiny crisp-edged SVG tiles) */
+  --px-speckle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges'%3E%3Crect width='2' height='2' fill='%23000000' fill-opacity='0.10'/%3E%3Crect x='4' y='4' width='2' height='2' fill='%23000000' fill-opacity='0.06'/%3E%3Crect x='6' width='2' height='2' fill='%23ffffff' fill-opacity='0.05'/%3E%3Crect x='2' y='6' width='2' height='2' fill='%23ffffff' fill-opacity='0.04'/%3E%3C/svg%3E");
+  --px-speckle-strong: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges'%3E%3Crect width='2' height='2' fill='%23000000' fill-opacity='0.20'/%3E%3Crect x='4' y='4' width='2' height='2' fill='%23000000' fill-opacity='0.12'/%3E%3Crect x='6' width='2' height='2' fill='%23ffffff' fill-opacity='0.10'/%3E%3Crect x='2' y='6' width='2' height='2' fill='%23ffffff' fill-opacity='0.08'/%3E%3C/svg%3E");
+  --px-stars: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' shape-rendering='crispEdges'%3E%3Crect x='8' y='14' width='2' height='2' fill='%23ffffff' fill-opacity='0.85'/%3E%3Crect x='40' y='6' width='2' height='2' fill='%23ffffff' fill-opacity='0.6'/%3E%3Crect x='66' y='26' width='2' height='2' fill='%23ffffff' fill-opacity='0.75'/%3E%3Crect x='22' y='52' width='2' height='2' fill='%23ffffff' fill-opacity='0.5'/%3E%3Crect x='84' y='62' width='2' height='2' fill='%23ffffff' fill-opacity='0.65'/%3E%3Crect x='54' y='80' width='2' height='2' fill='%23ffffff' fill-opacity='0.45'/%3E%3Crect x='30' y='88' width='2' height='2' fill='%23ffffff' fill-opacity='0.55'/%3E%3C/svg%3E");
+
+  /* Semantic tokens — day */
+  --page: #d3ebf6;
+  --sky-top: #74c3e6;
+  --sky-mid: #b6e0f2;
+  --sky-low: #e9f5f9;
+  --cloud: #ffffff;
+  --hill-far: #93c47a;
+  --hill-near: #6ba558;
+  --ground-grass: #6cbb45;
+  --ground-dirt: #8b5e3c;
+  --ground-stone: #8d949a;
+  --stars: 0;
+
+  --surface: #faf6ec;
+  --surface-2: #f0e8d6;
+  --surface-inset: #e2d7bf;
+  --border: #b2915f;
+  --border-strong: #7a5433;
+  --ink: #241a10;
+  --ink-muted: #58462f;
+  --ink-faint: #74603f;
+  --accent: #356e1c;
+  --accent-soft: #e0eece;
+  --accent-2: #1d6a91;
+  --accent-2-soft: #d8ecf6;
+  --gold: #7d5514;
+  --gold-soft: #f6e7c3;
+
+  --btn-primary-bg: #356e1c;
+  --btn-primary-bg-hover: #3f7a24;
+  --btn-primary-ink: #ffffff;
+  --btn-primary-edge: #274d14;
+  --btn-secondary-bg: #f0e8d6;
+  --btn-secondary-bg-hover: #e6dcc4;
+  --btn-secondary-ink: #241a10;
+  --btn-secondary-edge: #b2915f;
+
+  --panel-edge: rgba(94, 68, 36, 0.45);
+  --hard-shadow: rgba(35, 24, 12, 0.28);
+  --text-shadow-hard: rgba(250, 246, 236, 0.85);
+
+  /* Environmental progression: day -> afternoon -> sunset -> night.
+     Light-tinted values so text over the world keeps its contrast. */
+  --tint-warm-color: #ffe0b0;
+  --tint-dusk-color: #ffb98a;
+  --tint-night-color: #c9d6ea;
+  --tint-warm-amp: 0.18;
+  --tint-dusk-amp: 0.22;
+  --tint-night-amp: 0.3;
 }
 
-* {
-  font-family: var(--font-inter);
+.dark {
+  color-scheme: dark;
+
+  --page: #0f1317;
+  --sky-top: #080b10;
+  --sky-mid: #111922;
+  --sky-low: #1a242f;
+  --cloud: #2b333c;
+  --hill-far: #22301f;
+  --hill-near: #1a2618;
+  --ground-grass: #2f5d24;
+  --ground-dirt: #4a3018;
+  --ground-stone: #393f45;
+  --stars: 1;
+
+  --surface: #1b2025;
+  --surface-2: #232a30;
+  --surface-inset: #12171b;
+  --border: #3b434a;
+  --border-strong: #59636b;
+  --ink: #f4f0e4;
+  --ink-muted: #bdb6a6;
+  --ink-faint: #a09a89;
+  --accent: #7ccb4e;
+  --accent-soft: #1e2d17;
+  --accent-2: #6ec1e4;
+  --accent-2-soft: #13262f;
+  --gold: #e8b94a;
+  --gold-soft: #2c2415;
+
+  --btn-primary-bg: #6dbd42;
+  --btn-primary-bg-hover: #7ccb4e;
+  --btn-primary-ink: #12210a;
+  --btn-primary-edge: #2a4d1c;
+  --btn-secondary-bg: #262d33;
+  --btn-secondary-bg-hover: #2f373e;
+  --btn-secondary-ink: #f4f0e4;
+  --btn-secondary-edge: #4a545c;
+
+  --panel-edge: rgba(0, 0, 0, 0.6);
+  --hard-shadow: rgba(0, 0, 0, 0.5);
+  --text-shadow-hard: rgba(6, 9, 12, 0.85);
+
+  /* Night is already the base here, so the phases only shift the hue. */
+  --tint-warm-color: #6a4a2a;
+  --tint-dusk-color: #7a3f3f;
+  --tint-night-color: #0b1020;
+  --tint-warm-amp: 0.2;
+  --tint-dusk-amp: 0.24;
+  --tint-night-amp: 0.4;
 }
 
-html {
-  scroll-behavior: smooth;
+/* Expose the tokens to Tailwind so they can be used as utilities. */
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-inset: var(--surface-inset);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-2: var(--accent-2);
+  --color-accent-2-soft: var(--accent-2-soft);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-block-grass: var(--mc-grass);
+  --color-block-forest: var(--mc-forest);
+  --color-block-dirt: var(--mc-dirt);
+  --color-block-stone: var(--mc-stone);
+  --color-block-charcoal: var(--mc-charcoal);
+  --color-block-beige: var(--mc-beige);
+  --color-block-sky: var(--mc-sky);
+  --color-block-offwhite: var(--mc-warm-white);
+
+  --font-pixel: 'Silkscreen', 'Courier New', ui-monospace, monospace;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scrollbar-color: var(--border) var(--surface-inset);
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--page);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Blocky, pixel-styled headings by default. Body copy stays in Inter. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: var(--font-pixel);
+    font-weight: 700;
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--accent-2);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--mc-grass);
+    color: #10230b;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--surface-inset);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border: 3px solid var(--surface-inset);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
 
-body {
-  margin: 0;
-  padding: 0;
+/* ==========================================================================
+   Pixel / block primitives
+   ========================================================================== */
+@layer components {
+  /* --- Panels: block containers with hard edges and 3D depth ------------- */
+  .pixel-panel {
+    position: relative;
+    border: 3px solid var(--border-strong);
+    background-color: var(--surface);
+    background-image: var(--px-speckle);
+    background-size: 8px 8px;
+    box-shadow:
+      inset 0 3px 0 rgba(255, 255, 255, 0.16),
+      inset 0 -3px 0 rgba(0, 0, 0, 0.16),
+      inset -3px 0 0 rgba(0, 0, 0, 0.1),
+      inset 3px 0 0 rgba(255, 255, 255, 0.07),
+      6px 6px 0 var(--panel-edge);
+  }
+
+  /* --- Slots: inventory-style inset squares ----------------------------- */
+  .pixel-slot {
+    border: 3px solid var(--border);
+    background-color: var(--surface-inset);
+    background-image: var(--px-speckle);
+    background-size: 8px 8px;
+    box-shadow:
+      inset 3px 3px 0 rgba(0, 0, 0, 0.24),
+      inset -3px -3px 0 rgba(255, 255, 255, 0.14);
+  }
+
+  .pixel-slot--interactive {
+    transition:
+      transform 0.12s steps(2, end),
+      border-color 0.15s linear,
+      background-color 0.15s linear;
+  }
+
+  @media (hover: hover) {
+    .pixel-slot--interactive:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+  }
+
+  /* --- Buttons: chunky, hard-edged, with a pressed state ---------------- */
+  .pixel-btn {
+    --btn-bg: var(--btn-primary-bg);
+    --btn-bg-hover: var(--btn-primary-bg-hover);
+    --btn-ink: var(--btn-primary-ink);
+    --btn-edge: var(--btn-primary-edge);
+
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.8rem 1.35rem;
+    border: 3px solid var(--btn-edge);
+    border-radius: 0;
+    background-color: var(--btn-bg);
+    background-image: var(--px-speckle);
+    background-size: 8px 8px;
+    color: var(--btn-ink);
+    font-family: var(--font-pixel);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1.1;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow:
+      inset 0 3px 0 rgba(255, 255, 255, 0.18),
+      inset 0 -3px 0 rgba(0, 0, 0, 0.22),
+      0 5px 0 var(--btn-edge),
+      0 8px 0 var(--hard-shadow);
+    transition:
+      transform 0.08s steps(2, end),
+      background-color 0.15s linear,
+      box-shadow 0.08s steps(2, end);
+  }
+
+  .pixel-btn:hover {
+    background-color: var(--btn-bg-hover);
+  }
+
+  .pixel-btn:active {
+    transform: translateY(5px);
+    box-shadow:
+      inset 0 3px 0 rgba(255, 255, 255, 0.18),
+      inset 0 -3px 0 rgba(0, 0, 0, 0.22),
+      0 0 0 var(--btn-edge),
+      0 2px 0 var(--hard-shadow);
+  }
+
+  .pixel-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .pixel-btn--secondary {
+    --btn-bg: var(--btn-secondary-bg);
+    --btn-bg-hover: var(--btn-secondary-bg-hover);
+    --btn-ink: var(--btn-secondary-ink);
+    --btn-edge: var(--btn-secondary-edge);
+  }
+
+  .pixel-btn--ghost {
+    --btn-bg: transparent;
+    --btn-bg-hover: var(--accent-soft);
+    --btn-ink: var(--ink-muted);
+    --btn-edge: transparent;
+
+    background-image: none;
+    border-style: solid;
+    box-shadow: none;
+    font-size: 0.75rem;
+  }
+
+  .pixel-btn--ghost:hover {
+    --btn-ink: var(--accent);
+  }
+
+  .pixel-btn--ghost:active {
+    transform: translateY(2px);
+  }
+
+  .pixel-btn--sm {
+    min-height: 2.25rem;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.6875rem;
+  }
+
+  .pixel-btn--icon {
+    padding: 0.7rem;
+  }
+
+  .pixel-btn--block {
+    width: 100%;
+  }
+
+  /* --- Chips / labels --------------------------------------------------- */
+  .pixel-chip {
+    --chip-bg: var(--surface-2);
+    --chip-ink: var(--ink-muted);
+    --chip-edge: var(--border);
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border: 2px solid var(--chip-edge);
+    border-radius: 0;
+    background-color: var(--chip-bg);
+    background-image: var(--px-speckle);
+    background-size: 8px 8px;
+    padding: 0.3rem 0.55rem;
+    color: var(--chip-ink);
+    font-family: var(--font-pixel);
+    font-size: 0.6875rem;
+    line-height: 1.3;
+    box-shadow: 0 3px 0 var(--hard-shadow);
+  }
+
+  .pixel-chip--accent {
+    --chip-bg: var(--accent-soft);
+    --chip-ink: var(--accent);
+    --chip-edge: var(--accent);
+  }
+
+  .pixel-chip--gold {
+    --chip-bg: var(--gold-soft);
+    --chip-ink: var(--gold);
+    --chip-edge: var(--gold);
+  }
+
+  .pixel-chip--flat {
+    box-shadow: none;
+  }
+
+  /* --- Typography helpers ---------------------------------------------- */
+  .pixel-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid var(--border);
+    background-color: var(--surface-2);
+    background-image: var(--px-speckle);
+    background-size: 8px 8px;
+    padding: 0.35rem 0.7rem;
+    color: var(--ink-muted);
+    font-family: var(--font-pixel);
+    font-size: 0.6875rem;
+    line-height: 1;
+    text-transform: uppercase;
+    box-shadow: 0 3px 0 var(--hard-shadow);
+  }
+
+  /* Hard pixel drop-shadow for display type sitting over the world. */
+  .pixel-shadow {
+    text-shadow: 3px 3px 0 var(--text-shadow-hard);
+  }
+
+  .pixel-shadow-sm {
+    text-shadow: 2px 2px 0 var(--text-shadow-hard);
+  }
+
+  .pixel-link {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.15s linear;
+  }
+
+  .pixel-link:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  /* --- Decorative texture blocks --------------------------------------- */
+  .pixel-texture {
+    background-image: var(--px-speckle);
+    background-size: 8px 8px;
+  }
+
+  .pixel-texture--strong {
+    background-image: var(--px-speckle-strong);
+    background-size: 8px 8px;
+  }
+
+  /* Terrain layer separator: jagged grass edge -> grass -> dirt -> stone */
+  .terrain-strip {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 30px;
+    border: 0;
+    overflow: hidden;
+  }
+
+  .terrain-strip::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 6px;
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--ground-grass) 0 14px,
+      transparent 14px 28px
+    );
+  }
+
+  .terrain-strip::after {
+    content: '';
+    position: absolute;
+    inset: 6px 0 0 0;
+    background-image: var(--px-speckle-strong),
+      linear-gradient(
+        180deg,
+        var(--ground-grass) 0 8px,
+        var(--ground-dirt) 8px 16px,
+        var(--ground-stone) 16px 24px
+      );
+    background-size:
+      8px 8px,
+      100% 100%;
+  }
+
+  /* ======================================================================
+     World background — fixed sky / clouds / terrain / ground behind
+     the content. Purely decorative, never interactive.
+     ====================================================================== */
+  .world {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .world__sky {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+      180deg,
+      var(--sky-top) 0%,
+      var(--sky-mid) 42%,
+      var(--sky-low) 100%
+    );
+  }
+
+  .world__stars {
+    position: absolute;
+    inset: 0 0 34% 0;
+    background-image: var(--px-stars);
+    background-size: 96px 96px;
+    opacity: min(1, calc(var(--stars) + var(--world-night, 0)));
+  }
+
+  .world__clouds {
+    position: absolute;
+    inset: 6% 0 auto 0;
+    height: 34%;
+  }
+
+  .px-cloud {
+    position: absolute;
+    width: 72px;
+    height: 16px;
+    background-color: var(--cloud);
+    opacity: 0.55;
+    animation: cloud-drift linear infinite;
+  }
+
+  .px-cloud::before,
+  .px-cloud::after {
+    content: '';
+    position: absolute;
+    background-color: var(--cloud);
+  }
+
+  .px-cloud::before {
+    left: 16px;
+    bottom: 100%;
+    width: 32px;
+    height: 16px;
+  }
+
+  .px-cloud::after {
+    left: 48px;
+    bottom: 100%;
+    width: 16px;
+    height: 8px;
+  }
+
+  .px-cloud--1 {
+    top: 12%;
+    animation-duration: 110s;
+    animation-delay: -20s;
+  }
+
+  .px-cloud--2 {
+    top: 44%;
+    width: 48px;
+    animation-duration: 150s;
+    animation-delay: -70s;
+    opacity: 0.4;
+  }
+
+  .px-cloud--3 {
+    top: 74%;
+    width: 96px;
+    animation-duration: 190s;
+    animation-delay: -110s;
+    opacity: 0.3;
+  }
+
+  .world__hills {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 15vh;
+    height: 22vh;
+  }
+
+  .world__hills--far {
+    background-color: var(--hill-far);
+    opacity: 0.45;
+    clip-path: polygon(
+      0% 62%,
+      7% 62%,
+      7% 44%,
+      15% 44%,
+      15% 56%,
+      23% 56%,
+      23% 34%,
+      31% 34%,
+      31% 50%,
+      39% 50%,
+      39% 28%,
+      47% 28%,
+      47% 46%,
+      55% 46%,
+      55% 36%,
+      63% 36%,
+      63% 52%,
+      71% 52%,
+      71% 40%,
+      79% 40%,
+      79% 58%,
+      87% 58%,
+      87% 46%,
+      95% 46%,
+      95% 62%,
+      100% 62%,
+      100% 100%,
+      0% 100%
+    );
+  }
+
+  .world__hills--near {
+    bottom: 10vh;
+    height: 18vh;
+    background-color: var(--hill-near);
+    opacity: 0.5;
+    clip-path: polygon(
+      0% 70%,
+      10% 70%,
+      10% 52%,
+      20% 52%,
+      20% 66%,
+      30% 66%,
+      30% 44%,
+      40% 44%,
+      40% 60%,
+      50% 60%,
+      50% 50%,
+      60% 50%,
+      60% 68%,
+      70% 68%,
+      70% 54%,
+      80% 54%,
+      80% 64%,
+      90% 64%,
+      90% 46%,
+      100% 46%,
+      100% 100%,
+      0% 100%
+    );
+  }
+
+  .world__ground {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 15vh;
+    min-height: 104px;
+    background-image: var(--px-speckle-strong),
+      linear-gradient(
+        180deg,
+        var(--ground-grass) 0 22%,
+        var(--ground-dirt) 22% 64%,
+        var(--ground-stone) 64% 100%
+      );
+    background-size:
+      8px 8px,
+      100% 100%;
+  }
+
+  .world__ground::before {
+    content: '';
+    position: absolute;
+    inset: -6px 0 auto 0;
+    height: 6px;
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--ground-grass) 0 16px,
+      transparent 16px 32px
+    );
+  }
+
+  /* --- Small floating decorations (hero) -------------------------------- */
+  .px-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: var(--mc-grass);
+    opacity: 0.6;
+    animation: px-float 5s ease-in-out infinite;
+  }
+
+  .px-bob {
+    animation: px-bob 2s steps(4, end) infinite;
+  }
 }
 
-::-webkit-scrollbar {
-  width: 6px;
+@keyframes cloud-drift {
+  from {
+    transform: translateX(-30%);
+  }
+  to {
+    transform: translateX(140vw);
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+@keyframes px-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
-  border-radius: 3px;
+@keyframes px-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+/* ==========================================================================
+   Elevation pass — world phases, section motifs, item inspection, shared
+   hover depth, project scenes and the hidden discoveries.
+   ========================================================================== */
+@layer components {
+  /* --- Environmental progression tints ---------------------------------- */
+  .world__tint {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.45s linear;
+  }
+
+  .world__tint--warm {
+    background-color: var(--tint-warm-color);
+    opacity: calc(var(--world-warm, 0) * var(--tint-warm-amp));
+  }
+
+  .world__tint--dusk {
+    background-color: var(--tint-dusk-color);
+    opacity: calc(var(--world-dusk, 0) * var(--tint-dusk-amp));
+  }
+
+  .world__tint--night {
+    background-color: var(--tint-night-color);
+    opacity: calc(var(--world-night, 0) * var(--tint-night-amp));
+  }
+
+  /* --- Per-section world motifs (faint pixel-art watermarks) ------------ */
+  .section-motif {
+    position: absolute;
+    z-index: 0;
+    display: none;
+    color: var(--ink);
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  .section-motif svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    .section-motif {
+      display: block;
+      width: 9rem;
+      height: 9rem;
+      top: 1.5rem;
+    }
+
+    .section-motif--right {
+      right: 1rem;
+    }
+
+    .section-motif--left {
+      left: 1rem;
+    }
+  }
+
+  /* --- Shared hover depth for "collectible" cards ----------------------
+     The lift itself is applied with Framer Motion (`whileHover`), because it
+     owns the inline transform of the reveal animation; this class adds the
+     matching shadow so the block reads as physically raised. */
+  .pixel-lift {
+    transition:
+      box-shadow 0.14s steps(3, end),
+      border-color 0.14s linear;
+  }
+
+  @media (hover: hover) {
+    .pixel-lift:hover {
+      border-color: var(--accent);
+      box-shadow:
+        inset 0 3px 0 rgba(255, 255, 255, 0.16),
+        inset 0 -3px 0 rgba(0, 0, 0, 0.16),
+        inset -3px 0 0 rgba(0, 0, 0, 0.1),
+        inset 3px 0 0 rgba(255, 255, 255, 0.07),
+        6px 11px 0 var(--panel-edge);
+    }
+  }
+
+  /* Comfortable touch targets on phones */
+  @media (max-width: 639px) {
+    .pixel-btn--sm {
+      min-height: 2.75rem;
+    }
+
+    .skill-item .pixel-slot {
+      min-height: 2.75rem;
+    }
+  }
+
+  /* --- Inventory item inspection tooltip ------------------------------- */
+  .skill-item {
+    position: relative;
+  }
+
+  .skill-tip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 10px);
+    z-index: 30;
+    width: max-content;
+    max-width: 15rem;
+    transform: translateX(-50%);
+    border: 3px solid var(--border-strong);
+    background-color: var(--surface);
+    background-image: var(--px-speckle);
+    background-size: 8px 8px;
+    padding: 0.6rem 0.7rem;
+    text-align: left;
+    box-shadow: 4px 4px 0 var(--panel-edge);
+    animation: px-fade-in 0.12s steps(2, end);
+  }
+
+  /* --- Project preview scene (a crafted "build") ---------------------- */
+  .project-scene {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .project-scene__skyline {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 100%;
+    padding: 0 12px 12px;
+  }
+
+  .project-scene__skyline > span {
+    flex: 1 1 0;
+    min-width: 6px;
+    background-image: var(--px-speckle),
+      linear-gradient(180deg, var(--ground-grass) 0 8px, var(--ground-dirt) 8px 100%);
+    background-size: 8px 8px, 100% 100%;
+    opacity: 0.45;
+    transition: opacity 0.2s linear;
+  }
+
+  .project-card:hover .project-scene__skyline > span {
+    opacity: 0.62;
+  }
+
+  /* --- Discoveries: companion, sparkles, diggable block, advancements -- */
+  .px-companion {
+    position: relative;
+    width: 2.5rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    animation: px-companion-idle 3.6s steps(3, end) infinite;
+  }
+
+  .px-companion__top {
+    position: absolute;
+    left: 0.5rem;
+    bottom: 1.25rem;
+    width: 1.5rem;
+    height: 0.75rem;
+    background-color: var(--mc-grass);
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .px-companion__body {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1.5rem;
+    background-color: var(--mc-grass);
+    background-image: var(--px-speckle);
+    background-size: 8px 8px;
+    box-shadow:
+      inset 0 -4px 0 rgba(0, 0, 0, 0.2),
+      0 4px 0 var(--panel-edge);
+  }
+
+  .px-companion__body::before,
+  .px-companion__body::after {
+    content: '';
+    position: absolute;
+    top: 0.35rem;
+    width: 5px;
+    height: 5px;
+    background-color: #10230b;
+  }
+
+  .px-companion__body::before {
+    left: 0.5rem;
+  }
+
+  .px-companion__body::after {
+    right: 0.5rem;
+  }
+
+  .px-sparkle {
+    position: fixed;
+    z-index: 65;
+    width: 6px;
+    height: 6px;
+    background-color: var(--mc-grass);
+    pointer-events: none;
+    animation: px-sparkle 1.5s steps(5, end) forwards;
+  }
+
+  .dig-block {
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 3px solid var(--border-strong);
+    background-image: var(--px-speckle-strong),
+      linear-gradient(180deg, var(--ground-grass) 0 30%, var(--ground-dirt) 30% 100%);
+    background-size: 8px 8px, 100% 100%;
+    cursor: pointer;
+    transition: transform 0.1s steps(2, end);
+  }
+
+  .dig-block:hover {
+    transform: translateY(-3px);
+  }
+
+  .dig-block--found {
+    background-image: var(--px-speckle-strong),
+      linear-gradient(180deg, #bfeaf7 0 30%, #58b0d6 30% 100%);
+  }
+
+  .advancement-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    border: 3px solid var(--mc-gold);
+    background-color: var(--mc-charcoal);
+    background-image: var(--px-speckle);
+    background-size: 8px 8px;
+    padding: 0.7rem 0.85rem;
+    color: var(--mc-warm-white);
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
+    animation: px-toast-in 0.18s steps(3, end);
+  }
+
+  .advancement-toast__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid var(--mc-gold);
+    background-color: rgba(255, 255, 255, 0.06);
+    color: var(--mc-gold);
+  }
+}
+
+@keyframes px-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes px-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes px-companion-idle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes px-sparkle {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(72px);
+  }
 }

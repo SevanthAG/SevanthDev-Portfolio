@@ -1,34 +1,44 @@
 import { motion } from 'framer-motion';
 import { Home } from 'lucide-react';
+import WorldBackground from './WorldBackground';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#0B1120] px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center"
-      >
-        <p className="text-indigo-500 dark:text-indigo-400 font-medium text-sm mb-4 tracking-wide">
-          404
-        </p>
-        <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 dark:text-white mb-4">
-          Page Not Found
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
-          The page you&apos;re looking for doesn&apos;t exist or has been moved.
-        </p>
-        <a
-          href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm
-                     bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25
-                     hover:shadow-indigo-500/40 transition-all duration-200"
+    <>
+      <WorldBackground />
+
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="pixel-panel w-full max-w-lg p-8 text-center sm:p-10"
         >
-          <Home className="w-4 h-4" />
-          Back to Home
-        </a>
-      </motion.div>
-    </div>
+          <div className="mb-6 flex items-center justify-center gap-2" aria-hidden="true">
+            <span className="pixel-slot grid h-10 w-10 place-items-center font-pixel text-sm text-accent">
+              4
+            </span>
+            <span className="pixel-slot grid h-10 w-10 place-items-center font-pixel text-sm text-accent-2">
+              0
+            </span>
+            <span className="pixel-slot grid h-10 w-10 place-items-center font-pixel text-sm text-gold">
+              4
+            </span>
+          </div>
+
+          <h1 className="text-2xl leading-tight text-ink sm:text-3xl">Page Not Found</h1>
+
+          <p className="mx-auto mt-4 max-w-sm font-body text-sm leading-relaxed text-ink-muted">
+            The page you&apos;re looking for doesn&apos;t exist or has been moved.
+            Looks like you wandered off the edge of the world.
+          </p>
+
+          <a href="/" className="pixel-btn mt-8">
+            <Home className="h-4 w-4" aria-hidden="true" />
+            Back to Home
+          </a>
+        </motion.div>
+      </div>
+    </>
   );
 }

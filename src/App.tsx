@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, MotionConfig } from 'framer-motion';
 import { useTheme } from './hooks/useTheme';
+import WorldBackground from './components/WorldBackground';
+import AchievementProvider from './components/AchievementProvider';
+import { KeyboardSecrets } from './components/EasterEggs';
 import LoadingScreen from './components/LoadingScreen';
 import Navbar from './components/Navbar';
 import ScrollProgressBar from './components/ScrollProgressBar';
@@ -23,8 +26,8 @@ function HomePage() {
       <Hero />
       <About />
       <Skills />
-      <Experience />
       <Projects />
+      <Experience />
       <Certifications />
       <Leadership />
       <Contact />
@@ -42,28 +45,36 @@ export default function App() {
   }, [theme]);
 
   return (
-    <BrowserRouter>
-      <AnimatePresence mode="wait">
-        {isLoading ? (
-          <LoadingScreen key="loader" onComplete={() => setIsLoading(false)} />
-        ) : (
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <main className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0B1120]' : 'bg-white'}`}>
-                  <ScrollProgressBar />
-                  <Navbar theme={theme} onToggleTheme={toggleTheme} />
-                  <HomePage />
-                  <Footer />
-                  <ScrollToTop />
-                </main>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        )}
-      </AnimatePresence>
-    </BrowserRouter>
+    <MotionConfig reducedMotion="user">
+      <AchievementProvider>
+        <BrowserRouter>
+          <AnimatePresence mode="wait">
+          {isLoading ? (
+            <LoadingScreen key="loader" onComplete={() => setIsLoading(false)} />
+          ) : (
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <WorldBackground />
+                    <main className="relative z-10 min-h-screen">
+                      <ScrollProgressBar />
+                      <Navbar theme={theme} onToggleTheme={toggleTheme} />
+                      <HomePage />
+                      <Footer />
+                      <ScrollToTop />
+                      <KeyboardSecrets />
+                    </main>
+                  </>
+                }
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          )}
+          </AnimatePresence>
+        </BrowserRouter>
+      </AchievementProvider>
+    </MotionConfig>
   );
 }

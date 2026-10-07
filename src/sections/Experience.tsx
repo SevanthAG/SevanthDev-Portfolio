@@ -1,77 +1,89 @@
 import { motion } from 'framer-motion';
 import { useReveal } from '../hooks/useReveal';
 import { resumeData } from '../data/resume';
-import { Briefcase, CheckCircle2 } from 'lucide-react';
+import { Briefcase, Check } from 'lucide-react';
+import SectionHeading from '../components/SectionHeading';
+import SectionMotif from '../components/SectionMotif';
 
 export default function Experience() {
   const { ref, isVisible } = useReveal();
 
   return (
-    <section id="experience" className="py-24 relative bg-white dark:bg-[#0B1120]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <p className="text-indigo-500 dark:text-indigo-400 font-medium text-sm mb-3 tracking-wide">
-            Experience
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Professional Journey
-          </h2>
-        </motion.div>
+    <section id="experience" className="relative overflow-hidden py-20 sm:py-24">
+      <SectionMotif variant="journey" side="left" />
 
-        <div className="relative max-w-3xl mx-auto">
-          {/* Timeline line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gray-200 dark:bg-white/10 
-                          md:-translate-x-px" />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" ref={ref}>
+        <SectionHeading
+          step="04"
+          kicker="Experience"
+          title="Professional Journey"
+          subtitle="My progress through the world, one level at a time."
+        />
 
-          {resumeData.experience.map((exp, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.2 * i }}
-              className={`relative flex items-start mb-12 last:mb-0
-                ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
-            >
-              {/* Timeline dot */}
-              <div className="absolute left-4 md:left-1/2 w-8 h-8 -translate-x-1/2 rounded-full
-                              border-2 border-indigo-500 bg-white dark:bg-[#0B1120]
-                              flex items-center justify-center z-10">
-                <Briefcase className="w-3.5 h-3.5 text-indigo-500" />
-              </div>
+        <ol className="relative mx-auto max-w-3xl">
+          {/* Block rail connecting the progression nodes */}
+          <span
+            aria-hidden="true"
+            className="pixel-texture absolute bottom-4 left-[1.375rem] top-4 w-1.5 bg-line"
+          />
 
-              {/* Content */}
-              <div className={`ml-12 md:ml-0 md:w-1/2 ${i % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
-                <div className="p-6 rounded-2xl border border-gray-200 dark:border-white/5
-                                bg-gray-50 dark:bg-[#111827]/50 hover:border-indigo-200 
-                                dark:hover:border-indigo-500/20 transition-all duration-300">
-                  <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400
-                                   bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-1 rounded-full">
-                    {exp.period}
-                  </span>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mt-4 mb-1">
-                    {exp.title}
-                  </h3>
-                  <p className="text-sm text-indigo-600 dark:text-indigo-400 mb-4">
-                    {exp.company}
-                  </p>
-                  <ul className="space-y-2.5">
-                    {exp.responsibilities.map((resp, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-400">
-                        <CheckCircle2 className="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0" />
-                        <span className="leading-relaxed">{resp}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+          {resumeData.experience.map((exp, i) => {
+            const level = String(i + 1).padStart(2, '0');
+
+            return (
+              <motion.li
+                key={`${exp.title}-${exp.company}`}
+                initial={{ opacity: 0, y: 24 }}
+                animate={isVisible ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.45, delay: 0.15 * i }}
+                className="relative pb-8 pl-16 last:pb-0 sm:pl-20"
+              >
+                {/* Level node */}
+                <span
+                  aria-hidden="true"
+                  className="pixel-panel absolute left-0 top-0 grid h-12 w-12 place-items-center"
+                >
+                  <Briefcase className="h-4 w-4 text-accent" />
+                </span>
+
+                <article className="pixel-panel">
+                  <header className="pixel-texture flex flex-wrap items-center gap-x-3 gap-y-2 border-b-2 border-line bg-surface-2 px-4 py-3">
+                    <span className="pixel-chip pixel-chip--accent pixel-chip--flat">
+                      LEVEL {level}
+                    </span>
+                    <span className="font-pixel text-[10px] text-ink-muted">{exp.period}</span>
+                  </header>
+
+                  <div className="px-4 py-5 sm:px-5">
+                    <h3 className="text-sm leading-snug text-ink">{exp.title}</h3>
+                    <p className="mt-2 font-pixel text-[11px] leading-relaxed text-accent">
+                      {exp.company}
+                    </p>
+
+                    <h4 className="mt-5 font-pixel text-[10px] uppercase tracking-wider text-ink-faint">
+                      Objectives
+                    </h4>
+                    <ul className="mt-3 space-y-3">
+                      {exp.responsibilities.map((responsibility) => (
+                        <li key={responsibility} className="flex gap-3">
+                          <span
+                            aria-hidden="true"
+                            className="pixel-slot mt-0.5 grid h-5 w-5 shrink-0 place-items-center"
+                          >
+                            <Check className="h-3 w-3 text-accent" />
+                          </span>
+                          <span className="font-body text-sm leading-relaxed text-ink-muted">
+                            {responsibility}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              </motion.li>
+            );
+          })}
+        </ol>
       </div>
     </section>
   );

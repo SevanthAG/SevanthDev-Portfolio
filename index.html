@@ -17,8 +17,25 @@
     <meta name="twitter:description" content="BCA undergraduate specializing in MERN stack, AI-driven applications, and cybersecurity." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Silkscreen:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <title>Sevanth A G | Full Stack Developer</title>
+    <script>
+      // Apply the saved theme before first paint so the world never flashes.
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          if (saved !== 'light' && saved !== 'dark') {
+            saved = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+          }
+          document.documentElement.classList.add(saved);
+        } catch (error) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
   </head>
   <body class="antialiased">
     <div id="root"></div>

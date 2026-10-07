@@ -19,17 +19,16 @@ export default function ScrollToTop() {
     <AnimatePresence>
       {isVisible && (
         <motion.button
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.5 }}
+          type="button"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 16 }}
+          transition={{ duration: 0.18 }}
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-40 p-3 rounded-full shadow-lg
-                     bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10
-                     text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400
-                     transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-          aria-label="Scroll to top"
+          aria-label="Scroll back to top"
+          className="pixel-btn pixel-btn--secondary pixel-btn--icon fixed bottom-5 right-5 z-40 sm:bottom-6 sm:right-6"
         >
-          <ArrowUp className="w-5 h-5" />
+          <ArrowUp className="h-4 w-4" aria-hidden="true" />
         </motion.button>
       )}
     </AnimatePresence>

@@ -13,14 +13,17 @@ const navLinks = [
   { id: 'hero', label: 'Home' },
   { id: 'about', label: 'About' },
   { id: 'skills', label: 'Skills' },
-  { id: 'experience', label: 'Experience' },
   { id: 'projects', label: 'Projects' },
+  { id: 'experience', label: 'Experience' },
   { id: 'contact', label: 'Contact' },
 ];
 
+/** Hoisted so the scroll-spy effect keeps a stable dependency. */
+const navIds = navLinks.map((link) => link.id);
+
 export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const activeSection = useScrollSpy(navLinks.map((l) => l.id));
+  const activeSection = useScrollSpy(navIds);
 
   const handleNavClick = (id: string) => {
     setIsOpen(false);
@@ -33,54 +36,69 @@ export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
   return (
     <>
       <motion.nav
-        initial={{ y: -100 }}
+        initial={{ y: -110 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="fixed top-0 left-0 right-0 z-50"
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        aria-label="Main navigation"
+        className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-4 sm:pt-4"
       >
-        <div
-          className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 mt-4"
-        >
-          <div
-            className="rounded-2xl border backdrop-blur-xl transition-colors duration-300
-                        bg-white/70 dark:bg-[#111827]/70 border-gray-200/50 dark:border-white/10"
-          >
-            <div className="flex items-center justify-between h-14 px-5">
-              <button
-                onClick={() => handleNavClick('hero')}
-                className="text-lg font-bold tracking-tight focus:outline-none
-                           text-gray-900 dark:text-white"
+        <div className="mx-auto max-w-6xl">
+          <div className="pixel-panel flex items-center justify-between gap-2 px-3 py-2.5 sm:px-4">
+            {/* Brand — a little grass block plus the name in the pixel font */}
+            <button
+              type="button"
+              onClick={() => handleNavClick('hero')}
+              className="flex min-h-11 items-center gap-2.5 py-0.5 text-left"
+            >
+              <span
+                aria-hidden="true"
+                className="pixel-slot grid h-9 w-9 shrink-0 place-items-center"
               >
-                Sevanth<span className="text-indigo-500"> A G</span>
-              </button>
+                <span className="block h-4 w-4 bg-block-grass" />
+              </span>
+              <span className="font-pixel text-xs leading-tight text-ink sm:text-sm">
+                Sevanth
+                <span className="text-accent"> A G</span>
+              </span>
+            </button>
 
-              <div className="hidden md:flex items-center gap-1">
-                {navLinks.map((link) => (
-                  <button
-                    key={link.id}
-                    onClick={() => handleNavClick(link.id)}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
-                      ${activeSection === link.id
-                        ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10'
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
+            {/* Desktop nav: chunky block buttons, active one is "lit up" */}
+            <ul className="hidden items-center gap-1.5 lg:flex">
+              {navLinks.map((link) => {
+                const isActive = activeSection === link.id;
+                return (
+                  <li key={link.id}>
+                    <button
+                      type="button"
+                      onClick={() => handleNavClick(link.id)}
+                      aria-current={isActive ? 'true' : undefined}
+                      className={`pixel-btn pixel-btn--sm ${
+                        isActive ? '' : 'pixel-btn--ghost'
                       }`}
-                  >
-                    {link.label}
-                  </button>
-                ))}
-              </div>
+                    >
+                      {link.label}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
 
-              <div className="flex items-center gap-3">
-                <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 
-                             text-gray-600 dark:text-gray-400 focus:outline-none"
-                  aria-label="Toggle menu"
-                >
-                  {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                </button>
-              </div>
+            <div className="flex items-center gap-2">
+              <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+              <button
+                type="button"
+                onClick={() => setIsOpen((prev) => !prev)}
+                aria-expanded={isOpen}
+                aria-controls="mobile-nav"
+                className="pixel-btn pixel-btn--secondary pixel-btn--icon lg:hidden"
+              >
+                <span className="sr-only">{isOpen ? 'Close menu' : 'Open menu'}</span>
+                {isOpen ? (
+                  <X className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <Menu className="h-4 w-4" aria-hidden="true" />
+                )}
+              </button>
             </div>
           </div>
         </div>
@@ -89,27 +107,37 @@ export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            id="mobile-nav"
+            initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-20 left-4 right-4 z-40 rounded-2xl border backdrop-blur-xl p-4 md:hidden
-                       bg-white/90 dark:bg-[#111827]/90 border-gray-200/50 dark:border-white/10"
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-x-3 top-[5.5rem] z-40 lg:hidden"
           >
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <button
-                  key={link.id}
-                  onClick={() => handleNavClick(link.id)}
-                  className={`px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 text-left
-                    ${activeSection === link.id
-                      ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10'
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'
-                    }`}
-                >
-                  {link.label}
-                </button>
-              ))}
+            <div className="pixel-panel p-3">
+              <ul className="flex flex-col gap-2">
+                {navLinks.map((link) => {
+                  const isActive = activeSection === link.id;
+                  return (
+                    <li key={link.id}>
+                      <button
+                        type="button"
+                        onClick={() => handleNavClick(link.id)}
+                        aria-current={isActive ? 'true' : undefined}
+                        className={`pixel-btn pixel-btn--block justify-start ${
+                          isActive ? '' : 'pixel-btn--secondary'
+                        }`}
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={`h-2 w-2 ${isActive ? 'bg-block-offwhite' : 'bg-line'}`}
+                        />
+                        {link.label}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           </motion.div>
         )}
