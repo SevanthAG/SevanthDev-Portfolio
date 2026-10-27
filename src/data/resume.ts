@@ -4,18 +4,18 @@ export const resumeData: ResumeData = {
   name: 'Sevanth A G',
   title: 'Full Stack Developer',
   summary:
-    'BCA undergraduate (Class of 2026) with a strong academic record and hands-on experience in full-stack development and AI-driven applications.',
+    'Full-stack developer and BCA graduate (CGPA 9.08) who builds real-time and AI-powered web applications with React, TypeScript, Node.js, Express, and PostgreSQL/MongoDB.',
   about:
-    "I'm a passionate developer who loves building things that live on the internet. My journey into software development started with curiosity about how websites work, and has evolved into a deep passion for creating scalable, performant, and user-friendly applications. With a CGPA of 9.06, I combine academic excellence with practical, hands-on experience in modern web technologies.",
+    "I'm a full-stack developer who loves building real-time and AI-powered web applications. My journey started with curiosity about how websites work and has grown into hands-on work across React, TypeScript, Node.js, Express, PostgreSQL, and MongoDB — including WebSocket-based collaboration and LangChain + Gemini integrations. With a BCA CGPA of 9.08, I combine strong fundamentals with practical, project-driven experience.",
   careerObjective:
-    'To contribute technical expertise and adaptability to a fast-paced development team, leveraging my skills in full-stack development, AI integration, and cybersecurity to build impactful solutions.',
+    'To contribute technical expertise and adaptability to a fast-paced development team, leveraging full-stack and AI skills to build impactful, real-time solutions while growing in backend engineering.',
   learningJourney:
-    'Currently deepening my knowledge in system design, advanced backend architectures, and exploring the intersection of AI and web applications.',
+    'Currently advancing through the Web Dev + DevOps bootcamp (100xDevs) while deepening knowledge in backend engineering and AI-driven software development.',
   email: 'mrsevanthag@gmail.com',
   phone: '+91 9964923819',
   location: 'Mangaluru, India',
   socials: {
-    github: 'https://github.com/SevanthRao',
+    github: 'https://github.com/SevanthAG',
     linkedin: 'https://www.linkedin.com/in/sevanth-a-g-57aa472b0/',
     leetcode: 'https://leetcode.com/u/zvCr4RFMjz/',
     email: 'mrsevanthag@gmail.com',
@@ -25,7 +25,7 @@ export const resumeData: ResumeData = {
       institution: "Alva's Degree College, Moodbidre",
       degree: 'Bachelor of Computer Applications (BCA)',
       year: '2026',
-      score: 'CGPA: 9.06',
+      score: 'CGPA: 9.08',
     },
     {
       institution: 'EBAC – NMPUC Aranthodu, Sullia',
@@ -44,67 +44,101 @@ export const resumeData: ResumeData = {
     {
       title: 'Programming & Scripting',
       icon: 'Code2',
-      skills: ['Python', 'JavaScript', 'TypeScript', 'C', 'GoLang (Basics)', 'Java'],
+      skills: ['Python', 'JavaScript', 'TypeScript', 'C', 'Java'],
     },
     {
       title: 'Frontend',
       icon: 'Layout',
-      skills: ['React.js', 'HTML5', 'CSS3', 'Tailwind CSS', 'Framer Motion'],
+      skills: ['React.js', 'HTML5', 'CSS3', 'Tailwind CSS', 'Framer Motion', 'Vite'],
     },
     {
       title: 'Backend',
       icon: 'Server',
-      skills: ['Node.js', 'Express.js', 'Django (Basics)', 'REST APIs'],
+      skills: ['Node.js', 'Express.js', 'REST APIs', 'WebSockets'],
     },
     {
-      title: 'Database',
+      title: 'Database & AI',
       icon: 'Database',
-      skills: ['MongoDB', 'DBMS', 'SQL'],
+      skills: ['PostgreSQL', 'Prisma', 'MongoDB', 'SQLite', 'LangChain', 'Gemini API', 'SQL'],
+    },
+    {
+      title: 'Testing & Practice',
+      icon: 'ClipboardCheck',
+      skills: ['Manual Testing', 'Unit Testing', 'Bug Fixing', 'Feature Planning'],
     },
     {
       title: 'Tools & Platforms',
       icon: 'Wrench',
-      skills: ['Git', 'GitHub', 'VS Code', 'Postman', 'Docker (Learning)'],
+      skills: ['Git', 'GitHub', 'VS Code', 'Postman', 'Linux', 'MS Office'],
     },
     {
-      title: 'Core CS & Operating Systems',
+      title: 'Core CS',
       icon: 'Cpu',
-      skills: ['Linux (Ubuntu)', 'Operating Systems', 'Networking', 'Cybersecurity'],
+      skills: ['DBMS', 'Operating Systems', 'Networking', 'OOP', 'DSA', 'Cybersecurity'],
     },
   ],
   experience: [
     {
+      title: 'Guidance and Project Support Intern',
+      company: 'Grudhra Solutions Pvt Ltd',
+      period: 'Sep 2026 – Present',
+      responsibilities: [
+        'Review the product codebase to identify bugs, and fix selected issues in collaboration with teammates',
+        'Perform manual testing and unit testing across multiple testing platforms to verify functionality before release',
+        'Define the feature roadmap and project flow for a product in active development, deciding which features to build and what each should include',
+        'Guide teammates and coordinate day-to-day work in a collaborative team environment',
+      ],
+    },
+    {
       title: 'Full Stack Web Development Intern',
       company: 'Zephyr Technologies & Solutions Pvt. Ltd.',
-      period: 'Jul 2025 (30 Days)',
+      period: 'Jun 2025 (30 Days)',
       responsibilities: [
         'Developed responsive web pages using HTML, CSS, and JavaScript, ensuring cross-device compatibility',
         'Implemented DOM manipulation to enhance user interactivity and dynamic content updates',
         'Assisted in backend integration using Node.js and Express.js, gaining exposure to API development and database connectivity',
+        'Built reusable UI components with React.js to streamline frontend development and improve maintainability',
       ],
     },
   ],
   projects: [
     {
-      title: 'Interlix - AI',
-      description:
-        'Session-Driven AI Interview Preparation Platform',
+      title: 'BlockBoard',
+      description: 'Trello-style project management with real-time collaboration',
       longDescription:
-        'A centralized AI-powered platform integrating resume analysis, aptitude tests, and technical evaluation. Implements a session-driven architecture to ensure data consistency and personalized outputs. Generates match scores, skill gaps, and interview preparation content dynamically.',
-      techStack: [
-        'React.js',
-        'Node.js',
-        'Express.js',
-        'MongoDB',
-        'LangChain',
-        'Gemini AI',
-      ],
+        'A Trello-style collaboration app where users join organizations with role-based membership (Admin/Member) and manage boards, sections, and issues. Uses JWT authentication with bcrypt-hashed passwords, real-time sync through a raw WebSocket server where each board is a room, and a TypeScript Turborepo monorepo (React 19 + Vite frontend, Express 5 + Bun backend, shared Prisma package) deployed on Vercel.',
+      techStack: ['React.js', 'Express.js', 'WebSockets', 'Prisma', 'PostgreSQL'],
+      image: '/projects/blockboard.png',
+      github: 'https://github.com/SevanthAG',
+      status: 'completed',
+    },
+    {
+      title: 'Interlix AI',
+      description: 'Session-Driven AI Interview Preparation Platform',
+      longDescription:
+        'A full-stack interview preparation platform that analyzes a resume against a target job description and generates a match score, skill gaps, and interview prep content. Adds AI-generated aptitude and technical tests, an AI-refined PDF resume download via Puppeteer, cookie-based JWT authentication, PDF resume parsing, and session history so users can revisit past analyses.',
+      techStack: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'LangChain', 'Gemini API'],
       image: '/projects/interlix.png',
-      github: 'https://github.com/SevanthRao',
+      github: 'https://github.com/SevanthAG',
+      status: 'completed',
+    },
+    {
+      title: 'Huddle',
+      description: 'Room-based real-time chat',
+      longDescription:
+        'A room-based real-time chat app on a Bun WebSocket server: users create a room, share its server-generated ID, and chat live. Uses a JSON message protocol with room-scoped broadcasting, join/leave notices, error handling, and automatic room cleanup. The frontend is deployed on Vercel, and the room persists in the URL so a page refresh keeps the session.',
+      techStack: ['React.js', 'TypeScript', 'Bun', 'WebSockets', 'Tailwind CSS'],
+      image: '/projects/huddle.png',
+      github: 'https://github.com/SevanthAG',
       status: 'completed',
     },
   ],
   certifications: [
+    {
+      title: 'Web Dev + DevOps Bootcamp (In Progress)',
+      issuer: '100xDevs',
+      date: 'In Progress',
+    },
     {
       title: 'Google Cybersecurity Professional Certificate',
       issuer: 'Coursera',
@@ -136,7 +170,7 @@ export const resumeData: ResumeData = {
     },
     {
       title: 'Farewell Coordinator',
-      organization: 'Alva\'s Degree College (2024–2025)',
+      organization: "Alva's Degree College (2024–2025)",
       description:
         'Organized and executed the college farewell event, ensuring effective team coordination and timely delivery.',
     },

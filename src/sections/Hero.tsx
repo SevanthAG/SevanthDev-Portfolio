@@ -74,7 +74,7 @@ export default function Hero() {
 
             {/* CTAs */}
             <div className="mt-8 flex flex-wrap justify-center gap-4 lg:justify-start">
-              <a href="/SEVANTH_AG_Resume -7-7-26.pdf" download className="pixel-btn">
+              <a href="/Sevanth_A_G_Resume.pdf" download className="pixel-btn">
                 <Download className="h-4 w-4" aria-hidden="true" />
                 Download Resume
               </a>

@@ -13,7 +13,7 @@ const advancements = [
   },
   {
     title: 'Completed a full-stack development internship',
-    detail: `${resumeData.experience[0].company} · ${resumeData.experience[0].period}`,
+    detail: `${resumeData.experience[1].company} · ${resumeData.experience[1].period}`,
   },
   {
     title: `Earned ${resumeData.certifications.length} professional certifications`,

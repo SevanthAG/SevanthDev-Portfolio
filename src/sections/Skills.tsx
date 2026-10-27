@@ -3,13 +3,13 @@ import { motion } from 'framer-motion';
 import { useReveal } from '../hooks/useReveal';
 import { resumeData } from '../data/resume';
 import { getSkillMeta, techBlockColor } from '../data/skills';
-import { Code2, Layout, Server, Database, Wrench, Cpu } from 'lucide-react';
+import { Code2, Layout, Server, Database, Wrench, Cpu, ClipboardCheck } from 'lucide-react';
 import type { ComponentType } from 'react';
 import SectionHeading from '../components/SectionHeading';
 import SectionMotif from '../components/SectionMotif';
 
 const iconMap: Record<string, ComponentType<{ className?: string }>> = {
-  Code2, Layout, Server, Database, Wrench, Cpu,
+  Code2, Layout, Server, Database, Wrench, Cpu, ClipboardCheck,
 };
 
 /** Detail body shared by the floating tooltip and the phone dock. */
